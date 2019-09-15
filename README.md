@@ -16,13 +16,20 @@ Inserir desenho da arquitetura macro.
 
 Explicação mais técnica sobre a estrutura do projeto e quais tecnologias são usadas, e dependencias caso tenha alguma.
 
-## Sensores
+## Hardware
 
-Detalhar sensores usados e como são usados e orientaçoes de montagem/conexão.
+* ESP32
+- Essa placa foi escolhida por ter módulo de bluetooth e ser pequena
+
+* Sensor XD-58C
+- Sensor de batimento cardíaco.
+
+* Bateria de smartwatch
+- Para manter a pulseira funcionando
 
 ## Backend
 
-Explicar como funcionará a integração com o Backend.
+As medições dos batimentos cardiacos serão enviados para o do celular para o backend em Helix usando o protocolo MQTT.
 
 ## Colaborando
 
