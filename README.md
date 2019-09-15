@@ -10,7 +10,7 @@ Instruções de como rodar/compilar o projeto, e alertas em geral.
 
 ## Desenho da Arquitetura:
 
-.
+![index](https://user-images.githubusercontent.com/38408536/64927463-83c74980-d7e1-11e9-9970-674bb546ddd2.jpeg)
 
 ## Stack e arquitetura
 
