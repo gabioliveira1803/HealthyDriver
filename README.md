@@ -2,7 +2,7 @@
 
 ## Sobre o projeto
 
-Explicar a ideia geral do projeto e seu funcionamento.
+Com o intuito de monitorar os motoristas de transportadoras e de transporte viário, a Healthy Driver desenvolveu uma solução que utiliza uma pulseira com o sensor de batimento cardiaco, onde ele irá enviar os dados para o celular por meio de Bluetooth onde por um aplicativo desenvolvido para o encaminhamento dos dados para a nuvem onde os dados serão tratados pelo Helix e será devolvido em forma de analytcs que demonstram a situção em que o motorista se encontra para continuar dirigindo, estes dados estarão disponiveis para a pessoa responsavel que irá monitorar pelo analytics o estado em que o motorista se encontra.
 
 ## Getting started
 
@@ -10,11 +10,14 @@ Instruções de como rodar/compilar o projeto, e alertas em geral.
 
 ## Desenho da Arquitetura:
 
-Inserir desenho da arquitetura macro.
+.
 
 ## Stack e arquitetura
 
-Explicação mais técnica sobre a estrutura do projeto e quais tecnologias são usadas, e dependencias caso tenha alguma.
+* Helix & MongoDB
+* C/C++
+* MQTT
+* BLE
 
 ## Hardware
 
