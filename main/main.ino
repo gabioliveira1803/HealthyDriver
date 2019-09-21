@@ -1,31 +1,27 @@
-// define constantes e usa interruptor do arduino para akustes de precisao
-#define USE_ARDUINO_INTERRUPTS true
-#define PULSE 0
-#define THRESHOLD 550
-
-// falta inserir a lib de BLE
+#define USE_ARDUINO_INTERRUPTS false
 #include <PulseSensorPlayground.h>
-// cria objeto do sensor de pulso a partir da lib importada
+#define PulseWire = 0; //this pin #12 on flora
+
+int Threshold = 550;
+
 PulseSensorPlayground pulseSensor;
 
 void setup() {
-  // inicia serial e configura pino que esta conectado o sensor e o limite
-  // de medição, caso tudo ocorra bem ele imprime a mensagem
   Serial.begin(115200);
-  pulseSensor.analogInput(PULSE);
-  pulseSensor.setThreshold(THRESHOLD);
-   if (pulseSensor.begin()) {
-    Serial.println("Conectado com sucesso!");
+  Serial.println("cheguei ate aqui");
+  pulseSensor.analogInput(PulseWire);
+  //pulseSensor.blinkOnPulse(LED13);
+  pulseSensor.setThreshold(Threshold);
+  if (pulseSensor.begin()) {
+    Serial.println("We created a pulseSensor Object !");
   }
 }
-
 void loop() {
- int bpm = pulseSensor.getBeatsPerMinute();
- // armazena o valor do bpm e caso seja detectado um batimento ele imprime o
- // valor no serial e aguarda um pouco
- if (pulseSensor.sawStartOfBeat()) {
-   Serial.println(bpm);
-   // nessa parte tem que ser feito o envio pro BLE
- }
-  delay(20);
+  int myBPM = pulseSensor.getBeatsPerMinute();
+  if (pulseSensor.sawStartOfBeat()) {
+    Serial.println("♥ A HeartBeat Happened ! ");
+    Serial.print("BPM: ");
+    Serial.println(myBPM);
+  }
+  delay(1000);
 }
