@@ -6,10 +6,10 @@
 #define REPORTING_PERIOD_MS 1000
 #define URI "http://jsonplaceholder.typicode.com/posts"
 
-const char* ssid = "Meu 4G";
-const char* password = "Sl@yper91";
+const char* ssid = "qwer";
+const char* password = "1234qwer";
 
-int bpm = 0;
+int bpm = 2;
 
 PulseOximeter pox;
 HTTPClient http;
