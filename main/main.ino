@@ -1,68 +1,84 @@
 #include <WiFi.h>
-#include <HTTPClient.h>
 #include <Wire.h>
 #include "MAX30100_PulseOximeter.h"
+#include <PubSubClient.h>
+
+#define WIFI_SSID "wifi ssid"
+#define WIFI_PASSWORD "pass"
+
+#define MQTT_SERVER "iot.eclipse.org"
+#define MQTT_USER "abcdefg"
+#define MQTT_PASSWORD "password"
+#define MQTT_PORT 1883
+#define TOPIC "BPM" //UMA SUGESTAO É MUDAR O TOPICO PARA O MAC DO DEVICE CASO POSSIVEL
 
 #define REPORTING_PERIOD_MS 1000
-#define URI "http://jsonplaceholder.typicode.com/posts"
 
-const char* ssid = "qwer";
-const char* password = "1234qwer";
-
-int bpm = 2;
-
+IPAddress ip;
 PulseOximeter pox;
-HTTPClient http;
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+int bpm = 0;
+uint32_t tsLastReport = 0;
+
 
 void onBeatDetected() {
-  // For bpm, a value of 0 means "invalid"
   bpm = pox.getHeartRate();
   if (WiFi.status() == WL_CONNECTED) {
-    http.begin(URI);
-    http.addHeader("Content-Type", "text/plain");
-    int httpStatusCode = http.POST("POSTING from ESP32");
-    if (httpStatusCode > 0) {
-      String response = http.getString();
-      Serial.println(httpStatusCode);
-      Serial.println(response);
-    } else {
-      Serial.print("Error on sending POST: ");
-      Serial.println(httpStatusCode);
-    }
-    http.end();
+    connectBroker();
+    client.publish(TOPIC, bpm.c_str()); // talvez tenha que converter p string antes
+    Serial.println("Mensagem enviada com sucesso...");
   } else {
-    Serial.println("Error in WiFi connection");
+    Serial.println("Erro na conexão WiFi...");
   }
+  Serial.println("Batimento Detectado!");
 }
 
 void setup() {
   Serial.begin(115200);
-  Serial.print("Initializing pulse oximeter..");
-  // Initialize the PulseOximeter instance
-  // Failures are generally due to an improper I2C wiring, missing power supply
-  // or wrong target chip
-  if (!pox.begin()) {
-    Serial.println("FAILED");
-    for (;;); // loop infinito estranho
-  } else {
-    Serial.println("SUCCESS");
-  }
-
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
+    delay(3000);
+    Serial.println("CONECTANDO AO WIFI...");
   }
 
-  Serial.println("Connected to the WiFi network");
-  // The default current for the IR LED is 50mA and it could be changed
-  //   by uncommenting the following line. Check MAX30100_Registers.h for all the
-  //   available options.
-  // pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
+  Serial.println("CONECTADO A REDE WIFI!!");
+  Serial.print("Inicializando sensor de pulso...");
+
+  if (!pox.begin()) {
+    Serial.println("FALHOU!!");
+    for (;;); // loop infinito estranho
+  } else {
+    Serial.println("SUCESSO...");
+  }
+
   pox.setOnBeatDetectedCallback(onBeatDetected);
 }
 
 void loop() {
   pox.update();
+  // TALVEZ TENHAM QUE TIRAR ESSA PARTE DO IF
+  if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
+    Serial.print("Batimento Cardiaco: ");
+    Serial.print(pox.getHeartRate());
+    Serial.print("bpm\n");
+    tsLastReport = millis();
+  delay(1000);
+  }
+}
+
+void connectBroker() {
+  client.setServer(mqttServer, mqttPort);
+  while (!client.connected()) {
+    Serial.println("Conectando ao broker MQTT...");
+    if (client.connect("ESP32Client", mqttUser, mqttPassword )) { //acho que isso é diferente
+      Serial.println("Conectado ao broker!");
+    } else {
+      Serial.print("Falha na conexao ao broker - Estado: ");
+      Serial.print(client.state());
+      delay(2000);
+    }
+  }
 }
