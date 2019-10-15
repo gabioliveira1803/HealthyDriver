@@ -10,7 +10,7 @@
 #define MQTT_USER "abcdefg"
 #define MQTT_PASSWORD "password"
 #define MQTT_PORT 1883
-#define TOPIC "BPM" //UMA SUGESTAO É MUDAR O TOPICO PARA O MAC DO DEVICE CASO POSSIVEL
+#define TOPIC "BPM"
 
 #define REPORTING_PERIOD_MS 1000
 
@@ -27,7 +27,7 @@ void onBeatDetected() {
   bpm = pox.getHeartRate();
   if (WiFi.status() == WL_CONNECTED) {
     connectBroker();
-    client.publish(TOPIC, bpm.c_str()); // talvez tenha que converter p string antes
+    client.publish(TOPIC, String(bpm).c_str());
     Serial.println("Mensagem enviada com sucesso...");
   } else {
     Serial.println("Erro na conexão WiFi...");
@@ -37,7 +37,7 @@ void onBeatDetected() {
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(3000);
@@ -70,10 +70,10 @@ void loop() {
 }
 
 void connectBroker() {
-  client.setServer(mqttServer, mqttPort);
+  client.setServer(MQTT_SERVER, MQTT_PORT);
   while (!client.connected()) {
     Serial.println("Conectando ao broker MQTT...");
-    if (client.connect("ESP32Client", mqttUser, mqttPassword )) { //acho que isso é diferente
+    if (client.connect("ESP32Client", MQTT_USER, MQTT_PASSWORD )) { //acho que isso é diferente
       Serial.println("Conectado ao broker!");
     } else {
       Serial.print("Falha na conexao ao broker - Estado: ");
